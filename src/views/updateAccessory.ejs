@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Cập nhật phụ kiện</h1>
+<form action="/managerAccessories/update/<%= accessory._id %>" method="POST">
+    <label for="name">Tên phụ kiện:</label>
+    <input type="text" id="name" name="name" value="<%= accessory.name %>" required>
+    <br>
+    <label for="price">Giá:</label>
+    <input type="number" id="price" name="price" value="<%= accessory.price %>" required>
+    <br>
+    <label for="description">Mô tả:</label>
+    <textarea id="description" name="description"><%= accessory.description %></textarea>
+    <br>
+    <button type="submit">Cập nhật phụ kiện</button>
+</form>
+
+</body>
+</html>

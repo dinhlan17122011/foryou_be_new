@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Quản lý bánh</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Tên bánh</th>
+            <th>Giá</th>
+            <th>Mô tả</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% cakes.forEach(cake => { %>
+            <tr>
+                <td><%= cake.name %></td>
+                <td><%= cake.price %></td>
+                <td><%= cake.description %></td>
+                <td>
+                    <a href="/managerCakes/update/<%= cake._id %>">Cập nhật</a>
+                    <form action="/managerCakes/delete/<%= cake._id %>" method="POST" style="display:inline;">
+                        <button type="submit">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
+<a href="/addCake">Thêm bánh mới</a>
+
+</body>
+</html>
