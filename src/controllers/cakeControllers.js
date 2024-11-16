@@ -1,6 +1,18 @@
-import CakeModel, { findByIdAndUpdate, find } from '../models/cakeModels';
+// controllers/cakeControllers.js
+import CakeModel from '../models/cakeModels.js';
 
-// Thêm bánh mới
+// Get list of cakes
+export async function getCakes(req, res) {
+    try {
+        const cakes = await CakeModel.find();
+        res.render('managerCake', { cakes });
+    } catch (error) {
+        res.status(500).send('Error fetching cake list');
+        console.error('Error fetching cakes:', error);
+    }
+}
+
+// Add a new cake
 export async function addCake(req, res) {
     try {
         const { name, price, description } = req.body;
@@ -8,28 +20,29 @@ export async function addCake(req, res) {
         await newCake.save();
         res.redirect('/managerCakes');
     } catch (error) {
-        res.status(500).send('Lỗi khi thêm bánh mới');
+        res.status(500).send('Error adding new cake');
     }
 }
 
-// Cập nhật bánh
+// Update cake information
 export async function updateCake(req, res) {
     try {
         const { id } = req.params;
         const { name, price, description } = req.body;
-        await findByIdAndUpdate(id, { name, price, description });
+        await CakeModel.findByIdAndUpdate(id, { name, price, description });
         res.redirect('/managerCakes');
     } catch (error) {
-        res.status(500).send('Lỗi khi cập nhật bánh');
+        res.status(500).send('Error updating cake');
     }
 }
 
-// Quản lý bánh
-export async function getCakes(req, res) {
+// Delete a cake
+export async function deleteCake(req, res) {
     try {
-        const cakes = await find();
-        res.render('managerCake', { cakes });
+        const { id } = req.params;
+        await CakeModel.findByIdAndDelete(id);
+        res.redirect('/managerCakes');
     } catch (error) {
-        res.status(500).send('Lỗi khi lấy danh sách bánh');
+        res.status(500).send('Error deleting cake');
     }
 }

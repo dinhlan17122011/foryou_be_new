@@ -1,14 +1,14 @@
-import { Router } from 'express';
-const router = Router();
-import { getAccessories, addAccessory, updateAccessory } from '../controllers/accessoryControllers';
+// import { Router } from 'express';
+// const router = Router();
+// import { getAccessories, addAccessory, updateAccessory } from '../controllers/accessoryControllers.js';
 
-// Route để xem danh sách phụ kiện
-router.get('/', getAccessories);
+// // Route để xem danh sách phụ kiện
+// router.get('/', getAccessories);
 
-// Route để thêm phụ kiện mới
-router.post('/add', addAccessory);
+// // Route để thêm phụ kiện mới
+// router.post('/add', addAccessory);
 
-// Route để cập nhật phụ kiện
-router.post('/update/:id', updateAccessory);
+// // Route để cập nhật phụ kiện
+// router.post('/update/:id', updateAccessory);
 
-export default router;
+// export default router;

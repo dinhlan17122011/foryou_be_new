@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import { getCakes, addCake, updateCake, deleteCake } from '../controllers/cakeControllers';
-import { requestLogger, validateCakeData } from '../middlewares/';
-
+import { getCakes, addCake, updateCake, deleteCake } from '../controllers/cakeControllers.js';
+import { requestLogger } from '../middlewares/authMiddleware.js';
+import {validateCakeData} from '../middlewares/inputDdata.js'
 // Sử dụng middleware ghi log
 router.use(requestLogger);
 

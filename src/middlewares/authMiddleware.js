@@ -4,6 +4,4 @@ function requestLogger(req, res, next) {
     next();
 }
 
-module.exports = {
-    requestLogger
-};
+export { requestLogger };  // Sử dụng export thay vì module.exports

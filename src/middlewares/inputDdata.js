@@ -7,6 +7,4 @@ function validateCakeData(req, res, next) {
     next();
 }
 
-module.exports = {
-    validateCakeData
-};
+export { validateCakeData };  // Sử dụng export thay vì module.exports
