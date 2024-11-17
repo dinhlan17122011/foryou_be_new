@@ -4,17 +4,17 @@ const ObjectId = Schema.ObjectId;
 
 const cakeModels = new Schema({
     id:{type:ObjectId},
-    image :{type : String,required: true},
-    name:{type : String,required: true},
-    describe : {type:String,required: true},
-    price :{type:Number,required: true},
-    category:{type:String,required: true},
+    image :{type : String},
+    name:{type : String},
+    describe : {type:String},
+    price :{type:Number},
+    category:{type:String},
     size:[{
-        image:{type:String,required: true},
-        price:{type : Number,required: true},
-        size:{type:String,required: true}
+        image:{type:String},
+        price:{type : Number},
+        size:{type:String}
     }],
-    code:{type:String,required: true}
+    code:{type:String}
 });
 
 const MyModel = model('cake', cakeModels);

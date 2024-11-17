@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Accessories</title>
+</head>
+<body>
+    <h1>Manage Accessories</h1>
+    <a href="/accessories/add">Add New Accessory</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% accessories.forEach(accessory => { %>
+                <tr>
+                    <td><%= accessory.name %></td>
+                    <td><%= accessory.price %></td>
+                    <td><%= accessory.description %></td>
+                    <td>
+                        <a href="/accessories/update/<%= accessory._id %>">Edit</a> | 
+                        <a href="/accessories/delete/<%= accessory._id %>">Delete</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

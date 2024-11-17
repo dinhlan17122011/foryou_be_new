@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Cakes</title>
+</head>
+<body>
+    <h1>Manage Cakes</h1>
+    <a href="/cake/add">Add New Cake</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% cakes.forEach(cake => { %>
+                <tr>
+                    <td><%= cake.name %></td>
+                    <td><%= cake.price %></td>
+                    <td><%= cake.description %></td>
+                    <td>
+                        <a href="/cakes/update/<%= cake._id %>">Edit</a> | 
+                        <a href="/cakes/delete/<%= cake._id %>">Delete</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

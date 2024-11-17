@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Cake</title>
+</head>
+<body>
+    <h1>Update Cake</h1>
+    <form action="/cakes/update/<%= cake.id %>" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="<%= cake.name %>" required><br><br>
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" value="<%= cake.price %>" required><br><br>
+
+        <label for="image">Image URL:</label>
+        <input type="text" id="image" name="image" value="<%= cake.image %>"><br><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required><%= cake.description %></textarea><br><br>
+
+        <button type="submit">Update Cake</button>
+    </form>
+    <a href="/cakes">Back to Cakes List</a>
+</body>
+</html>

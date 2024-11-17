@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { getCakes, addCake, updateCake, deleteCake } from '../controllers/cakeControllers.js';
+import { getCakes, addCake, updateCake, deleteCake , add } from '../controllers/cakeControllers.js';
 import { requestLogger } from '../middlewares/authMiddleware.js';
 import {validateCakeData} from '../middlewares/inputDdata.js'
 // Sử dụng middleware ghi log
@@ -10,6 +10,7 @@ router.use(requestLogger);
 router.get('/', getCakes);
 
 // Route để thêm bánh mới với middleware kiểm tra dữ liệu
+router.get('/add', add);
 router.post('/add', validateCakeData, addCake);
 
 // Route để cập nhật thông tin bánh

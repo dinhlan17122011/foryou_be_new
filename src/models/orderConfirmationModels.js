@@ -1,4 +1,4 @@
-import { Schema as _Schema, model, Types } from 'mongoose';
+import { Schema as _Schema, model, mongoose} from 'mongoose';
 const Schema = _Schema;
 const ObjectId = Schema.ObjectId;
 
@@ -29,6 +29,11 @@ const time = new Schema({
 
 const orderConfirmationModels = new Schema({
   id:{type : ObjectId},
+  userId: {              // Liên kết với người dùng
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+},
   placers:placer,
   receivers:receiver,
   addresss:address,

@@ -18,10 +18,15 @@ export async function addCake(req, res) {
         const { name, price, description } = req.body;
         const newCake = new CakeModel({ name, price, description });
         await newCake.save();
-        res.redirect('/managerCakes');
+        res.redirect('/cake');
     } catch (error) {
+        console.log(error);
         res.status(500).send('Error adding new cake');
     }
+}
+
+export function add(req,res){
+    res.render('addCake');
 }
 
 // Update cake information
