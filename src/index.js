@@ -3,10 +3,11 @@ const app = express()
 const port = 3000
 import bodyParser from 'body-parser';
 import connectDB from './config/connectDB.js'
-// const managerCakeRoutes = require('./routes/managerCakeRoutes.js')
 import managerCakeRoutes from './routes/managerCakeRoutes.js'
-// import managerOrderRoutes from './routes/managerOrder.js'
-// import managerAccessoryRoutes from './routes/managerAccessoryRoutes.js'
+import managerOrderRoutes from './routes/managerOrder.js'
+import managerAccessoryRoutes from './routes/managerAccessoryRoutes.js'
+import managerShoppingCart from './routes/managerShoppingCart.js'
+import homePage from './routes/homePage.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -23,9 +24,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/cake', managerCakeRoutes);
-// app.use('order', managerOrderRoutes);
-// app.use('/Accessor', managerAccessoryRoutes);
-
+app.use('order', managerOrderRoutes);
+app.use('/Accessor', managerAccessoryRoutes);
+app.use('/shopping', managerShoppingCart);
+app.use('/',homePage)
 connectDB()
 
 app.listen(port, () => {

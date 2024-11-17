@@ -1,34 +1,34 @@
-// import AccessoryModel, { find, findByIdAndUpdate } from '../models/accessoryModels.js';
+import Accessory from '../models/accessoryModels.js';
 
-// // Thêm phụ kiện mới
-// export async function addAccessory(req, res) {
-//     try {
-//         const { name, price, description } = req.body;
-//         const newAccessory = new AccessoryModel({ name, price, description });
-//         await newAccessory.save();
-//         res.redirect('/managerAccessories');
-//     } catch (error) {
-//         res.status(500).send('Lỗi khi thêm phụ kiện mới');
-//     }
-// }
+export const getAllAccessories = async (req, res) => {
+    try {
+        const accessories = await Accessory.find();
+        res.status(200).json(accessories);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving accessories', error });
+    }
+};
 
-// // Quản lý phụ kiện
-// export async function getAccessories(req, res) {
-//     try {
-//         const accessories = await find();
-//         res.render('managerAccessory', { accessories });
-//     } catch (error) {
-//         res.status(500).send('Lỗi khi lấy danh sách phụ kiện');
-//     }
-// }
+export const createAccessory = async (req, res) => {
+    const { image, name, price, code } = req.body;
+    try {
+        const newAccessory = new Accessory({ image, name, price, code });
+        await newAccessory.save();
+        res.status(201).json(newAccessory);
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating accessory', error });
+    }
+};
 
-// export async function updateAccessory(req, res) {
-//     try {
-//         const { id } = req.params;
-//         const { name, price, description } = req.body;
-//         await findByIdAndUpdate(id, { name, price, description });
-//         res.redirect('/managerAccessories');
-//     } catch (error) {
-//         res.status(500).send('Lỗi khi cập nhật phụ kiện');
-//     }
-// }
+export const getAccessoryById = async (req, res) => {
+    try {
+        const accessory = await Accessory.findById(req.params.id);
+        if (accessory) {
+            res.status(200).json(accessory);
+        } else {
+            res.status(404).json({ message: 'Accessory not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving accessory', error });
+    }
+};
