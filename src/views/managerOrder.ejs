@@ -3,34 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Orders</title>
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table thead {
+            background-color: #007bff;
+            color: white;
+        }
+        .order-summary {
+            margin-top: 30px;
+            font-size: 16px;
+        }
+        .total-price {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .back-btn:hover {
+            background-color: #218838;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Manage Orders</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Date</th>
-                <th>Total Price</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% orders.forEach(order => { %>
+    <div class="container">
+        <h1>Order Confirmation</h1>
+
+        <!-- Placer and Receiver Details -->
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <p><strong>Placer:</strong> <%= order.placer.name %> | <%= order.placer.phone %></p>
+            <p><strong>Receiver:</strong> <%= order.receiver.name %> | <%= order.receiver.phone %></p>
+            <p><strong>Delivery Address:</strong> <%= order.address.district %>, <%= order.address.ward %></p>
+            <p><strong>Delivery Time:</strong> <%= order.time.day %> at <%= order.time.time %></p>
+        </div>
+
+        <!-- Cart Items -->
+        <table>
+            <thead>
                 <tr>
-                    <td><%= order._id %></td>
-                    <td><%= order.customerName %></td>
-                    <td><%= new Date(order.date).toLocaleDateString() %></td>
-                    <td><%= order.totalPrice %></td>
-                    <td>
-                        <a href="/orders/details/<%= order._id %>">View</a> | 
-                        <a href="/orders/delete/<%= order._id %>">Delete</a>
-                    </td>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <% cart.items.forEach(item => { %>
+                    <tr>
+                        <td><%= item.name %></td>
+                        <td><%= item.price %> VNĐ</td>
+                        <td><%= item.quantity %></td>
+                        <td><%= item.totalPrice %> VNĐ</td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Total Price -->
+        <div class="order-summary">
+            <p class="total-price">Total Amount: <%= cart.totalCartPrice %> VNĐ</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="buttons">
+            <a href="/order/confirm/<%= invoice._id %>" class="submit-btn">Confirm Order</a>
+            <a href="/cart" class="back-btn">Back to Cart</a>
+        </div>
+    </div>
 </body>
 </html>

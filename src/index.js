@@ -6,7 +6,7 @@ import connectDB from './config/connectDB.js'
 import managerCakeRoutes from './routes/managerCakeRoutes.js'
 import managerOrderRoutes from './routes/managerOrder.js'
 import managerAccessoryRoutes from './routes/managerAccessoryRoutes.js'
-import managerShoppingCart from './routes/managerShoppingCart.js'
+import shoppingCartRouter from './routes/shoppingCartRouter.js'
 import homePage from './routes/homePage.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -24,9 +24,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/cake', managerCakeRoutes);
+app.use('/shoping',shoppingCartRouter)
 app.use('order', managerOrderRoutes);
-app.use('/Accessor', managerAccessoryRoutes);
-app.use('/shopping', managerShoppingCart);
+app.use('/accessories', managerAccessoryRoutes);
 app.use('/',homePage)
 connectDB()
 

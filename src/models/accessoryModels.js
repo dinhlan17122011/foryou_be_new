@@ -4,10 +4,11 @@ const ObjectId = Schema.ObjectId;
 
 const accessoryModels = new Schema({
     id:{type:ObjectId},
-    image:{type : String,required: true},
-    name:{type:String,required: true},
-    price:{type:Number,required: true},
-    code:{type:String,required: true}
+    image:{type : String},
+    name:{type:String},
+    describe:{type:String},
+    price:{type:Number},
+    code:{type:String}
 });
 
 const MyModel = model('accessory', accessoryModels);

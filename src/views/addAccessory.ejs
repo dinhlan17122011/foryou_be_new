@@ -6,6 +6,7 @@
     <title>Add Accessory</title>
 </head>
 <body>
+    <%- include('./navbar') %>
     <h1>Add New Accessory</h1>
     <form action="/accessories/add" method="POST">
         <label for="name">Name:</label>
@@ -17,8 +18,8 @@
         <label for="image">Image URL:</label>
         <input type="text" id="image" name="image"><br><br>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea><br><br>
+        <label for="describe">Description:</label>
+        <textarea id="describe" name="describe" rows="4" required></textarea><br><br>
 
         <button type="submit">Add Accessory</button>
     </form>

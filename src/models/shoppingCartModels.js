@@ -1,21 +1,18 @@
-import { Schema as _Schema, model,mongoose } from 'mongoose';
-const Schema = _Schema;
-const ObjectId = Schema.ObjectId;
+import mongoose from 'mongoose';
+const { Schema, model } = mongoose;
 
-const shoppingModels = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',  // Liên kết với bảng Users
-        required: true,
-    },
-    id:{type:ObjectId},
-    image:{type:String,required: true},
-    price:{type:String,required: true},
-    quantity:{type:Number,required: true},
-    totalPrice:{type:Number,required: true},
-    writingcake:{type:String,required: true}
-});
+const shoppingCartSchema = new Schema({
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Liên kết với người dùng
+    products: [
+        {
+            productId: { type: Schema.Types.ObjectId, ref: 'Accessory', required: true },
+            quantity: { type: Number, required: true },
+            price: { type: Number, required: true },
+        },
+    ],
+    totalPrice: { type: Number, required: true }, // Tổng giá trị của giỏ hàng
+}, { timestamps: true });
 
-const MyModel = model('shoppingcart', shoppingModels);
+const ShoppingCart = model('ShoppingCart', shoppingCartSchema);
 
-export default MyModel;
+export default ShoppingCart;

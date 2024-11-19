@@ -1,12 +1,12 @@
-import { Router } from 'express';
-const router = Router();
-import * as orderConfirmationController from '../controllers/orderConfirmation.js';
+import express from 'express';
+import { createOrder, getOrderDetails } from '../controllers/orderConfirmation.js';
 
+const router = express.Router();
 
-router.get('/orders', orderConfirmationController.getAllOrders);
-router.get('/orders/:id',orderConfirmationController.getOrderById)
-router.get('/orders/:id/invoice', orderConfirmationController.printInvoice);
-// router.put('/orders/:id', orderConfirmationController.updateOrder);
-// router.delete('/orders/:id', orderConfirmationController.deleteOrder);
+// Tạo đơn hàng từ giỏ hàng và thông tin người dùng
+router.post('/create', createOrder);
+
+// Lấy chi tiết đơn hàng theo ID
+router.get('/:orderId', getOrderDetails);
 
 export default router;

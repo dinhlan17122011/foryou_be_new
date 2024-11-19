@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Cake</title>
+    <title>Add New Cake</title>
 </head>
 <body>
+    <%- include('./navbar') %>
     <h1>Add New Cake</h1>
     <form action="/cake/add" method="POST">
         <label for="name">Name:</label>
@@ -17,11 +18,41 @@
         <label for="image">Image URL:</label>
         <input type="text" id="image" name="image"><br><br>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea><br><br>
+        <label for="describe">Description:</label>
+        <textarea id="describe" name="describe" rows="4" required></textarea><br><br>
+
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category"><br><br>
+
+        <label for="size">Size:</label>
+        <div id="size-container">
+            <div class="size-entry">
+                <input type="text" name="size_image" placeholder="Image URL">
+                <input type="number" name="size_price" placeholder="Price">
+                <input type="text" name="size_size" placeholder="Size">
+            </div>
+        </div>
+        <button type="button" onclick="addSize()">Add More Sizes</button><br><br>
+
+        <label for="code">Code:</label>
+        <input type="text" id="code" name="code"><br><br>
 
         <button type="submit">Add Cake</button>
     </form>
-    <a href="/cake">Back to Cakes List</a>
+    <a href="/cakes">Back to Cakes List</a>
+
+    <script>
+        function addSize() {
+            const sizeContainer = document.getElementById('size-container');
+            const newSizeEntry = document.createElement('div');
+            newSizeEntry.classList.add('size-entry');
+            newSizeEntry.innerHTML = `
+                <input type="text" name="size_image" placeholder="Image URL">
+                <input type="number" name="size_price" placeholder="Price">
+                <input type="text" name="size_size" placeholder="Size">
+            `;
+            sizeContainer.appendChild(newSizeEntry);
+        }
+    </script>
 </body>
 </html>

@@ -4,31 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Accessories</title>
+    <style>
+        a {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            /* background-color: #45a049; */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        /* .actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        } */
+        .edit, .delete {
+            padding: 5px 15px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete {
+            background-color: #f44336;
+        }
+        .delete:hover {
+            background-color: #d32f2f;
+        }
+        .edit:hover {
+            background-color: #f57c00;
+        }
+        .no-accessories {
+            text-align: center;
+            font-style: italic;
+            color: #757575;
+        }
+    </style>
 </head>
 <body>
+    <%- include('./navbar') %>
     <h1>Manage Accessories</h1>
+    
     <a href="/accessories/add">Add New Accessory</a>
+    
     <table>
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Description</th>
-                <th>Actions</th>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th>Nội dung</th>
+                <th>Chỉnh sửa</th>
             </tr>
         </thead>
         <tbody>
-            <% accessories.forEach(accessory => { %>
+            <% if (typeof accessories !== 'undefined' && accessories.length > 0) { %>
+                <% accessories.forEach(accessory => { %>
+                    <tr>
+                        <td><%= accessory.name %></td>
+                        <td><%= accessory.price %></td>
+                        <td><%= accessory.describe %></td>
+                        <td class="actions">
+                            <!-- Edit action -->
+                            <button>
+                                <a href="/accessories/update/<%= accessory._id %>" class="edit">Edit</a>
+                            </button>
+                            <!-- Delete action -->
+                            <form action="/accessories/delete/<%= accessory._id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
                 <tr>
-                    <td><%= accessory.name %></td>
-                    <td><%= accessory.price %></td>
-                    <td><%= accessory.description %></td>
-                    <td>
-                        <a href="/accessories/update/<%= accessory._id %>">Edit</a> | 
-                        <a href="/accessories/delete/<%= accessory._id %>">Delete</a>
-                    </td>
+                    <td colspan="4" class="no-accessories">No accessories found.</td>
                 </tr>
-            <% }) %>
+            <% } %>
         </tbody>
     </table>
 </body>
