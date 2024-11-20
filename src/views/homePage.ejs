@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Trang Quản Lý</title>
 </head>
 <body>
-    <%- include('./navbar') %>
-    <h1>Chào mừng đến với trang quản lý Backend foryou</h1>
+    <%- include('./navbar') %> <!-- Nếu bạn có navbar, thay đổi đường dẫn theo đúng của bạn -->
+    <h1>Chào mừng đến với trang quản lý Backend ForYou</h1>
+
+    <h2>Thông tin tổng quan</h2>
+    <p>Tổng số người dùng: <%= totalUsers %></p>
+    <p>Tổng số bánh: <%= totalCakes %></p>
+    <p>Tổng số đơn hàng: <%= totalOrders %></p>
+
     <nav>
         <ul>
             <li><a href="/cake">Quản lý bánh</a></li>
@@ -15,6 +21,5 @@
             <li><a href="/">Quản lý đơn hàng</a></li>
         </ul>
     </nav>
-    
 </body>
 </html>
