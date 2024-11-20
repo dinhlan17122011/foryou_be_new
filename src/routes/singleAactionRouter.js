@@ -1,24 +1,14 @@
-import express from 'express'
-// import { placeOrder, getUserOrders, getOrderDetails, updateOrderStatus, cancelOrder } from '../controllers/orderController.js';
-// Kiểm tra lại import của bạn
-import { placeOrder, getUserOrders, updateOrderStatus, cancelOrder, getOrderDetails } from '../controllers/singleAction.js';
-
+import express from 'express';
+import { addToCart, confirmOrderInfo, placeOrder ,getInvoices,printOrder} from '../controllers/singleAction.js';
+import requestLogger  from '../middlewares/authMiddleware.js'; // Middleware xác thực
+// import authenticateToken from './middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// Đặt hàng mới
-router.post('/place-order', placeOrder);
-
-// Xem danh sách đơn hàng của người dùng
-router.get('/orders', getUserOrders);
-
-// Xem chi tiết một đơn hàng
-router.get('/order/:orderId', getOrderDetails);
-
-// Cập nhật trạng thái đơn hàng
-router.put('/order/:orderId/status', updateOrderStatus);
-
-// Hủy đơn hàng
-router.delete('/order/:orderId', cancelOrder);
+router.post('/cart', requestLogger, addToCart); // Thêm sản phẩm vào giỏ hàng
+router.put('/order/confirm', requestLogger, confirmOrderInfo); // Xác nhận thông tin
+router.post('/order/place', requestLogger, placeOrder); // Gộp dữ liệu thành hóa đơn
+router.get('/invoices', requestLogger, getInvoices); // Lấy danh sách hóa đơn
+router.get('/order/:orderId/print', printOrder);
 
 export default router;

@@ -1,9 +1,13 @@
 import { Router } from 'express';
 const router = Router();
 import { getCakes, addCake, updateCake, deleteCake , add ,update ,viewCake} from '../controllers/cakeControllers.js';
-import { requestLogger } from '../middlewares/authMiddleware.js';
+// import  requestLogger  from '../middlewares/authMiddleware.js';
+import requestLogger from '../middlewares/authMiddleware.js';
+
 import {validateCakeData} from '../middlewares/inputDdata.js'
 import CategoryModel from '../models/CategoryModels.js';
+
+// router.use(someVariable);
 
 // Sử dụng middleware ghi log
 router.use(requestLogger);

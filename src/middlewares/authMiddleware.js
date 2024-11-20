@@ -1,7 +1,19 @@
-// Middleware để ghi log các yêu cầu đến server
-function requestLogger(req, res, next) {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-    next();
-}
+import jwt from 'jsonwebtoken';
 
-export { requestLogger };  // Sử dụng export thay vì module.exports
+const authMiddleware = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token, authorization denied' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'secretkey');
+        req.user = decoded; // Lưu thông tin người dùng vào req.user
+        next();
+    } catch (error) {
+        res.status(401).json({ message: 'Token is not valid' });
+    }
+};
+
+export default authMiddleware;

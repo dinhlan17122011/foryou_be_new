@@ -8,6 +8,9 @@ import managerOrderRoutes from './routes/singleAactionRouter.js'
 import managerAccessoryRoutes from './routes/managerAccessoryRoutes.js'
 import shoppingCartRouter from './routes/shoppingCartRouter.js'
 import homePage from './routes/homePage.js';
+import userRouter from './routes/userRouter.js';
+import checkVar from './routes/checkVar.js'; // Import router đã tạo
+import checkVarMiddlewares from './middlewares/checkVar.js'; // Import middleware
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -28,6 +31,7 @@ app.use('/shoping',shoppingCartRouter)
 app.use('/', managerOrderRoutes);
 app.use('/accessories', managerAccessoryRoutes);
 app.use('/',homePage)
+app.use('/',userRouter)
 connectDB()
 
 app.listen(port, () => {
