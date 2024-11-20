@@ -5,87 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Cakes</title>
     <style>
-
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         h1 {
             text-align: center;
             color: #333;
-            margin: 20px 0;
         }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .add-button {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        .add-button:hover {
-            background-color: #218838;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 20px;
         }
-
         table thead {
             background-color: #007bff;
             color: white;
         }
-
         table th, table td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-
         table tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #f9f9f9;
         }
-
-        table tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .actions a {
-            text-decoration: none;
-            margin-right: 10px;
-            padding: 8px 12px;
+        .image-cell img {
+            max-width: 80px;
             border-radius: 4px;
-            color: white;
+        }
+        .actions a, .actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
             font-size: 14px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 5px;
         }
-
-        .actions .edit {
+        .edit {
             background-color: #007bff;
+            color: white;
         }
-
-        .actions .edit:hover {
-            background-color: #0056b3;
-        }
-
-        .actions .delete {
+        .delete {
             background-color: #dc3545;
+            color: white;
         }
-
-        .actions .delete:hover {
-            background-color: #c82333;
+        .details {
+            background-color: #28a745;
+            color: white;
         }
     </style>
 </head>
@@ -93,30 +71,62 @@
     <%- include('./navbar') %>
     <div class="container">
         <h1>Manage Cakes</h1>
-        <a href="/cake/add" class="add-button">Add New Cake</a>
+        <a href="/cake/add" class="edit">Add New Cake</a>
         <table>
             <thead>
                 <tr>
-                    <th>Tên</th>
-                    <th>Giá</th>
-                    <th>Nội dung</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Category</th>
                     <th>Code</th>
-                    <th>Chỉnh sửa</th>
+                    <th>Sizes</th>
+                    <th>Actions</th>
+                    <th>Details</th> <!-- Cột Xem Chi Tiết -->
                 </tr>
             </thead>
             <tbody>
                 <% cakes.forEach(cake => { %>
                     <tr>
-                        <td><%= cake.name %></td>
-                        <td><%= cake.price %> VNĐ</td>
-                        <td><%= cake.describe || "No description available" %></td>
-                        <td><%= cake.code || "No description available" %></td>
+                        <td class="image-cell">
+                            <% if (cake.image) { %>
+                                <img src="<%= cake.image %>" alt="Cake Image">
+                            <% } else { %>
+                                No Image
+                            <% } %>
+                        </td>
+                        <td><%= cake.name || "No Name" %></td>
+                        <td><%= cake.describe || "No Description" %></td>
+                        <td><%= cake.price || "N/A" %> VNĐ</td>
+                        <td><%= cake.category || "No Category" %></td>
+                        <td><%= cake.code || "No Code" %></td>
+                        <td>
+                            <% if (cake.size && cake.size.length > 0) { %>
+                                <ul>
+                                    <% cake.size.forEach(size => { %>
+                                        <li>
+                                            <strong>Size:</strong> <%= size.size %> |
+                                            <strong>Price:</strong> <%= size.price %> VNĐ |
+                                            <% if (size.image) { %>
+                                                <img src="<%= size.image %>" alt="Size Image" style="max-width: 40px; vertical-align: middle;">
+                                            <% } %>
+                                        </li>
+                                    <% }); %>
+                                </ul>
+                            <% } else { %>
+                                No Sizes
+                            <% } %>
+                        </td>
                         <td class="actions">
-                            <a href="/cake/update/<%= cake._id %>"  class="edit">Edit</a>
-                            <!-- <a href="/cake/delete/<%= cake._id %>" method="POST" class="delete">Delete</a> -->
-                            <form action="/cake/delete/<%= cake._id %>" method="POST" style="display: inline;">
+                            <a href="/cake/update/<%= cake._id %>" class="edit">Edit</a>
+                            <form action="/cake/delete/<%= cake._id %>" method="POST" style="display:inline;">
                                 <button type="submit" class="delete">Delete</button>
                             </form>
+                        </td>
+                        <td class="actions">
+                            <!-- Thêm nút Xem Chi Tiết -->
+                            <a href="/cake/view/<%= cake._id %>" class="details">View Details</a>
                         </td>
                     </tr>
                 <% }); %>

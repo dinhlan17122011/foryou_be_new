@@ -21,6 +21,11 @@ const InvoiceSchema = new Schema({
         },
     ],
     totalAmount: { type: Number, required: true }, // Tổng số tiền
+    status: {
+        type: String,
+        enum: ['processing', 'shipped', 'delivered', 'canceled'],
+        default: 'processing', // Mặc định là đang xử lý
+    },
     placer: {
         name: { type: String, required: true },
         phone: { type: String, required: true },
@@ -41,7 +46,17 @@ const InvoiceSchema = new Schema({
         day: { type: String, required: true },
         time: { type: String, required: true },
     },
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'paid', 'failed'],
+        default: 'pending',
+    },
     createdAt: { type: Date, default: Date.now },
+});
+
+InvoiceSchema.pre('save', function (next) {
+    this.totalAmount = this.items.reduce((total, item) => total + item.totalPrice, 0);
+    next();
 });
 
 const Invoice = model('Invoice', InvoiceSchema);

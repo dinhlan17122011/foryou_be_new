@@ -4,7 +4,7 @@ const port = 3000
 import bodyParser from 'body-parser';
 import connectDB from './config/connectDB.js'
 import managerCakeRoutes from './routes/managerCakeRoutes.js'
-import managerOrderRoutes from './routes/managerOrder.js'
+import managerOrderRoutes from './routes/singleAactionRouter.js'
 import managerAccessoryRoutes from './routes/managerAccessoryRoutes.js'
 import shoppingCartRouter from './routes/shoppingCartRouter.js'
 import homePage from './routes/homePage.js';
@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/cake', managerCakeRoutes);
 app.use('/shoping',shoppingCartRouter)
-app.use('order', managerOrderRoutes);
+app.use('/', managerOrderRoutes);
 app.use('/accessories', managerAccessoryRoutes);
 app.use('/',homePage)
 connectDB()

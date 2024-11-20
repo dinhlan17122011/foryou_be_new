@@ -22,37 +22,64 @@
         <textarea id="describe" name="describe" rows="4" required></textarea><br><br>
 
         <label for="category">Category:</label>
-        <input type="text" id="category" name="category"><br><br>
+        <select id="category" name="category">
+            <% categories.forEach(category => { %>
+                <option value="<%= category._id %>"><%= category.name %></option>
+            <% }) %>
+            <option value="new">Create New Category</option>
+        </select>
+        <br><br>
+    
+        <!-- Trường nhập thể loại mới, ẩn mặc định -->
+        <div id="new-category-container" style="display: none;">
+            <label for="new-category">New Category:</label>
+            <input type="text" id="new-category" name="newCategory">
+        </div>
 
         <label for="size">Size:</label>
         <div id="size-container">
             <div class="size-entry">
-                <input type="text" name="size_image" placeholder="Image URL">
-                <input type="number" name="size_price" placeholder="Price">
-                <input type="text" name="size_size" placeholder="Size">
+                <input type="text" name="size[0][image]" placeholder="Image URL">
+                <input type="number" name="size[0][price]" placeholder="Price">
+                <input type="text" name="size[0][size]" placeholder="Size">
             </div>
         </div>
         <button type="button" onclick="addSize()">Add More Sizes</button><br><br>
+        
+        <!-- <button type="button" onclick="addSize()">Add More Sizes</button><br><br> -->
 
         <label for="code">Code:</label>
         <input type="text" id="code" name="code"><br><br>
 
         <button type="submit">Add Cake</button>
     </form>
-    <a href="/cakes">Back to Cakes List</a>
+    <a href="/cake">Back to Cakes List</a>
 
     <script>
+        let sizeCount = 1; // Index tiếp theo cho phần tử size
         function addSize() {
             const sizeContainer = document.getElementById('size-container');
             const newSizeEntry = document.createElement('div');
             newSizeEntry.classList.add('size-entry');
             newSizeEntry.innerHTML = `
-                <input type="text" name="size_image" placeholder="Image URL">
-                <input type="number" name="size_price" placeholder="Price">
-                <input type="text" name="size_size" placeholder="Size">
+                <input type="text" name="size[${sizeCount}][image]" placeholder="Image URL">
+                <input type="number" name="size[${sizeCount}][price]" placeholder="Price">
+                <input type="text" name="size[${sizeCount}][size]" placeholder="Size">
             `;
             sizeContainer.appendChild(newSizeEntry);
+            sizeCount++;
         }
+        const categorySelect = document.getElementById('category');
+    const newCategoryContainer = document.getElementById('new-category-container');
+
+    categorySelect.addEventListener('change', () => {
+        if (categorySelect.value === 'new') {
+            newCategoryContainer.style.display = 'block';
+        } else {
+            newCategoryContainer.style.display = 'none';
+        }
+    });
     </script>
+    
 </body>
 </html>
