@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/UserModel.js';
 
@@ -13,14 +12,11 @@ export const register = async (req, res) => {
             return res.status(400).json({ message: 'Email already exists' });
         }
 
-        // Mã hóa mật khẩu
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Tạo người dùng mới
+        // Không mã hóa mật khẩu
         const newUser = new User({
             name,
             email,
-            password: hashedPassword,
+            password, // Lưu mật khẩu không mã hóa
         });
 
         await newUser.save();
@@ -33,28 +29,26 @@ export const register = async (req, res) => {
 };
 
 // Đăng nhập người dùng
+import generateToken from '../middlewares/generateToken.js'; // Đảm bảo bạn đã import đúng hàm generateToken
+
+// Đăng nhập người dùng
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // Kiểm tra email
+        // Kiểm tra người dùng trong cơ sở dữ liệu
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: 'User not found' });
+        if (!user || user.password !== password) {
+            return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        // Kiểm tra mật khẩu
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Tạo mã thông báo JWT
-        const token = jwt.sign({ _id: user._id }, 'secretkey', { expiresIn: '1h' });
-
-        res.status(200).json({ message: 'Login successful', token });
+        const token = generateToken(user); // Tạo token
+        res.json({
+            message: "Login successful",
+            token,
+            user: { name: user.name }, // Đảm bảo trả về dữ liệu đúng
+        });
     } catch (error) {
-        console.error('Error logging in user:', error);
-        res.status(500).json({ message: 'Error logging in user', error });
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
     }
 };

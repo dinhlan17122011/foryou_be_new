@@ -33,7 +33,7 @@ router.get('/create', (req, res) => {
 });
 
 // Endpoint để xử lý tạo thể loại mới
-router.post('/create', async (req, res) => {
+router.post('/category/create', async (req, res) => {
     try {
         const { name } = req.body;
 
@@ -50,6 +50,40 @@ router.post('/create', async (req, res) => {
     } catch (error) {
         console.error('Error creating category:', error);
         res.status(500).send('Error creating category');
+    }
+});
+
+// Endpoint để xóa thể loại theo ID
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        console.log('Deleting category with ID:', req.params.id); // Log để kiểm tra ID
+
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: 'Invalid category ID' });
+        }
+
+        const category = await CategoryModel.findByIdAndDelete(id);
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        res.status(200).json({ message: 'Category deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting category:', error);
+        res.status(500).json({ message: 'Error deleting category' });
+    }
+});
+
+// Hiển thị danh sách thể loại
+router.get('/category', async (req, res) => {
+    try {
+        console.log('Deleting category with ID:', req.params.id);
+        const categories = await CategoryModel.find();
+        res.render('manageCategories', { categories }); // Gửi danh sách category đến giao diện
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).send('Error fetching categories');
     }
 });
 

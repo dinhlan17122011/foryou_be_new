@@ -132,6 +132,52 @@
                 <% }); %>
             </tbody>
         </table>
+        <% if (successMessage) { %>
+            <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                <%= successMessage %>
+            </div>
+        <% } %>
+        
+        <% if (errorMessage) { %>
+            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        
     </div>
 </body>
+<script>
+    // Hiển thị thông báo
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast' + (isError ? ' error' : '') + ' show';
+      setTimeout(() => { toast.className = 'toast'; }, 4000);
+    }
+
+    // Xử lý submit form
+    document.getElementById('banhForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      const name = formData.get('name');
+
+      try {
+        const response = await fetch('/add-banh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+
+        if (response.ok) {
+          showToast(`Bánh "${name}" đã được thêm thành công!`);
+          form.reset();
+        } else {
+          showToast('Có lỗi xảy ra. Vui lòng thử lại.', true);
+        }
+      } catch (error) {
+        showToast('Không thể kết nối tới server.', true);
+      }
+    });
+  </script>
 </html>
