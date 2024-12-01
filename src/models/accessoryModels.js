@@ -6,7 +6,6 @@ const accessoryModels = new Schema({
     id:{type:ObjectId},
     image:{type : String},
     name:{type:String},
-    describe:{type:String},
     price:{type:Number},
     code:{type:String}
 });

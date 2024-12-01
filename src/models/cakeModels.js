@@ -4,17 +4,14 @@ const ObjectId = Schema.ObjectId;
 
 const cakeModels = new Schema({
     id:{type:ObjectId},
-    image :{type : String},
-    name:{type : String},
-    describe : {type:String},
-    price :{type:Number},
-    // category:{type:String},
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    name:{type:String},
     size:[{
         image:{type:String},
         price:{type : Number},
         size:{type:String}
     }],
+    describe : {type:String},
+    category: { type: String},
     code:{type:String}
 });
 
