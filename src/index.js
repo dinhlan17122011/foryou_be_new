@@ -2,7 +2,6 @@ import express from 'express'
 const app = express()
 const port = 3000
 
-import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import connectDB from './config/connectDB.js';
@@ -11,10 +10,16 @@ import userRoutes from './routes/userRoutes.js';
 import cakeRoutes from './routes/cakeRoutes.js';
 import accessoryRoutes from './routes/accessoryRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+// const cors = require("cors");
+import cors from 'cors';
+
+// Thêm vào trong file server.js (hoặc file tương tự)
+app.use(cors());
+
+console.log(cors);
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {

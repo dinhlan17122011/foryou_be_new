@@ -4,7 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "fe": "cd .. && cd foryou-app && npm start",
+    "be": " npm start",
+    "admin": "cd .. && cd foryou-adimi && npm run dev",
     "test": "jest",
+    "dev": "concurrently \"npm run fe\" \"npm run be\" \"npm run admin\"",
     "start": "nodemon src/index.js"
   },
   "author": "",
@@ -14,6 +18,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "bootstrap": "^5.3.3",
+    "concurrently": "^9.1.0",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -24,6 +29,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongod": "^2.0.0",
     "mongodb-memory-server": "^9.2.0",
+    "nodemailer": "^6.9.16",
     "nodemon": "^3.1.0",
     "pdfkit": "^0.15.1",
     "proxy": "^2.2.0"
