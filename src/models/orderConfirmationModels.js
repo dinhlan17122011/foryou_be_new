@@ -4,31 +4,32 @@ const Schema = _Schema;
 const OrderConfirmationSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Liên kết đến người dùng
+        ref: 'User',
         required: true,
     },
     placer: {
-        name: { type: String, required: true },
-        phone: { type: String, required: true },
+        name: { type: String, default: '' }, // Thay required bằng default
+        phone: { type: String, default: '' },
     },
     receiver: {
-        similarToAbove: { type: Boolean, required: true },
-        name: { type: String },
-        phone: { type: String },
+        similarToAbove: { type: Boolean, default: false },
+        name: { type: String, default: '' },
+        phone: { type: String, default: '' },
     },
     address: {
-        district: { type: String, required: true },
-        ward: { type: String, required: true },
-        details: { type: String, required: true },
+        district: { type: String, default: '' },
+        ward: { type: String, default: '' },
+        details: { type: String, default: '' },
     },
     bill: {
-        tickBill: { type: Boolean, required: true },
+        tickBill: { type: Boolean, default: false },
     },
     time: {
-        day: { type: String, required: true },
-        time: { type: String, required: true },
+        day: { type: String, default: '' },
+        time: { type: String, default: '' },
     },
 });
+
 
 // Nếu `receiver.similarToAbove` là true, tự động sao chép thông tin từ `placer` sang `receiver`
 OrderConfirmationSchema.pre('save', function (next) {

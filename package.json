@@ -6,9 +6,8 @@
   "scripts": {
     "fe": "cd .. && cd foryou-app && npm start",
     "be": " npm start",
-    "admin": "cd .. && cd foryou-adimi && npm run dev",
     "test": "jest",
-    "dev": "concurrently \"npm run fe\" \"npm run be\" \"npm run admin\"",
+    "dev": "concurrently \"npm run fe\" \"npm run be\"",
     "start": "nodemon src/index.js"
   },
   "author": "",
