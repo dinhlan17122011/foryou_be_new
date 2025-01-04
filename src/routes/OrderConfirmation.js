@@ -1,15 +1,31 @@
 import express from 'express';
-import { createOrder, updateOrder, validateOrder } from '../controllers/OrderConfirmation.js';
+import authenticateToken from '../middlewares/userId.js';
+import {
+  createOrderConfirmation,
+  addAccessoriesToOrder,
+  updateOrderConfirmation,
+  finalizeOrderConfirmation,
+  getOrdersByUserId
+} from '../controllers/OrderConfirmation.js';
 
 const router = express.Router();
 
-// Route tạo đơn hàng mới
-router.post('/orders', createOrder);
+router.get('/user', authenticateToken, (req, res) => {
+  res.json({ userId: req.user.id });
+});
 
-// Route cập nhật thông tin đơn hàng theo userId
-router.put('/orders/:userId', updateOrder);
+router.get('/user/:userId', getOrdersByUserId);
 
-// Route kiểm tra tính hợp lệ của đơn hàng
-router.get('/orders/:userId/validate', validateOrder);
+// Tạo đơn hàng trống
+router.post('/create', createOrderConfirmation);
+
+// Thêm phụ kiện vào đơn hàng
+router.post('/:id/accessory', addAccessoriesToOrder);
+
+// Cập nhật thông tin người đặt và người nhận
+router.put('/:id/update', updateOrderConfirmation);
+
+// Xác nhận và thanh toán đơn hàng
+router.put('/:id/finalize', finalizeOrderConfirmation);
 
 export default router;
