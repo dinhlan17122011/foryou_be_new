@@ -17,22 +17,25 @@ import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET || 'defaultsecret'));
 
 // Cấu hình express-session
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'defaultsecret',  // Secret để mã hóa session
-    resave: false,  // Không lưu session nếu không có sự thay đổi
-    saveUninitialized: false,  // Không lưu session khi chưa có gì thay đổi
-    cookie: {
-        httpOnly: true,  // Bảo vệ khỏi việc client có thể truy cập cookie thông qua JS
-        secure: process.env.NODE_ENV === 'production',  // Sử dụng secure cookie khi ở môi trường production
-        maxAge: 3600000, // Thời gian sống của session (1 giờ)
-    },
+  secret: process.env.SESSION_SECRET || 'defaultsecret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 3600000, // 1 giờ
+  },
 }));
 
 // Thêm vào trong file server.js (hoặc file tương tự)
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5000', // URL frontend
+  credentials: true,              // Cho phép cookie được gửi
+}));
 
 console.log(cors);
 
