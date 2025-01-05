@@ -5,7 +5,8 @@ import {
   addAccessoriesToOrder,
   updateOrderConfirmation,
   finalizeOrderConfirmation,
-  getOrdersByUserId
+  getOrdersByUserId,
+  deleteOrderConfirmation
 } from '../controllers/OrderConfirmation.js';
 
 const router = express.Router();
@@ -13,6 +14,8 @@ const router = express.Router();
 router.get('/user', authenticateToken, (req, res) => {
   res.json({ userId: req.user.id });
 });
+
+router.delete('/orders/:id', deleteOrderConfirmation);
 
 router.get('/user/:userId', getOrdersByUserId);
 

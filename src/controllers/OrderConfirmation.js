@@ -38,39 +38,53 @@ export const createOrderConfirmation = async (req, res) => {
 // Bước 2: Thêm phụ kiện vào đơn hàng
 export const addAccessoriesToOrder = async (req, res) => {
   try {
-    const orderId = req.params.id; // Lấy ID đơn hàng từ URL
-    const { Accessory } = req.body; // Thông tin phụ kiện từ body
+    const orderId = req.params.id;
+    const { Accessory } = req.body;
 
-    // Kiểm tra nếu phụ kiện không hợp lệ
+    // Kiểm tra dữ liệu phụ kiện có hợp lệ không
     if (!Array.isArray(Accessory) || Accessory.length === 0) {
       return res.status(400).json({ message: 'Thông tin phụ kiện không hợp lệ' });
     }
 
-    // Tính tổng tiền các phụ kiện
-    const accessoryTotal = Accessory.reduce((sum, acc) => sum + (acc.number * acc.quantity), 0);
+    // Kiểm tra từng phụ kiện
+    for (const acc of Accessory) {
+      if (!acc.number || !acc.quantity) {
+        return res.status(400).json({ message: 'Thiếu thông tin phụ kiện' });
+      }
+    }
 
-    // Tính toán tổng tiền (bao gồm tiền ship 30k)
+    // Tính tổng số tiền của phụ kiện
+    const accessoryTotal = Accessory.reduce((sum, acc) => {
+      // Kiểm tra số lượng và giá trị phụ kiện hợp lệ trước khi tính
+      if (isNaN(acc.price) || isNaN(acc.quantity)) {
+        return sum;  // Không tính nếu giá trị không hợp lệ
+      }
+      return sum + (acc.price * acc.quantity);
+    }, 0);
+
+    // Tìm đơn hàng theo id
     const order = await OrderConfirmation.findById(orderId);
     if (!order) {
       return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
     }
 
-    // Cập nhật đơn hàng với phụ kiện
+    // Cập nhật phụ kiện vào đơn hàng
     order.Accessory = Accessory;
-    order.totalAmount = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) + accessoryTotal + 30000; // 30000 là tiền ship
 
-    // Lưu thay đổi
+    // Cập nhật tổng số tiền đơn hàng (bao gồm cả phụ kiện và các item khác)
+    order.totalAmount = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0) + accessoryTotal + 30000; // 30000 là phí cố định hoặc bạn có thể thay đổi
+
+    // Lưu lại đơn hàng với các thay đổi
     await order.save();
 
-    res.status(200).json({
-      message: 'Thêm phụ kiện vào đơn hàng thành công',
-      order
-    });
+    res.status(200).json({ message: 'Thêm phụ kiện vào đơn hàng thành công', order });
   } catch (error) {
-    console.error('Lỗi khi thêm phụ kiện vào đơn hàng:', error);
-    res.status(500).json({ message: 'Thêm phụ kiện thất bại', error });
+    console.error('Lỗi khi thêm phụ kiện vào đơn hàng:', error);  // Log lỗi chi tiết
+    res.status(500).json({ message: 'Thêm phụ kiện thất bại', error: error.message });
   }
 };
+
+
 
 // Bước 3: Cập nhật thông tin khách hàng và xác thực đơn hàng
 export const updateOrderConfirmation = async (req, res) => {
@@ -146,6 +160,11 @@ export const getOrdersByUserId = async (req, res) => {
   try {
     const { userId } = req.params; // Lấy userId từ params
 
+    // Kiểm tra xem userId có hợp lệ không
+    if (!userId || userId === 'null') {
+      return res.status(400).json({ message: 'userId không hợp lệ. Vui lòng đăng nhập.' });
+    }
+
     // Tìm tất cả các đơn hàng của userId
     const orders = await OrderConfirmation.find({ userId });
 
@@ -164,5 +183,29 @@ export const getOrdersByUserId = async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi lấy danh sách đơn hàng:', error);
     res.status(500).json({ message: 'Không thể lấy danh sách đơn hàng.', error });
+  }
+};
+
+
+// Bước 5: Xóa đơn hàng
+export const deleteOrderConfirmation = async (req, res) => {
+  try {
+    const orderId = req.params.id; // Lấy ID đơn hàng từ URL
+
+    // Tìm và xóa đơn hàng
+    const deletedOrder = await OrderConfirmation.findByIdAndDelete(orderId);
+
+    // Nếu không tìm thấy đơn hàng
+    if (!deletedOrder) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng để xóa' });
+    }
+
+    res.status(200).json({
+      message: 'Đơn hàng đã được xóa thành công',
+      deletedOrder
+    });
+  } catch (error) {
+    console.error('Lỗi khi xóa đơn hàng:', error);
+    res.status(500).json({ message: 'Xóa đơn hàng thất bại', error });
   }
 };

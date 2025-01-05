@@ -1,7 +1,10 @@
 import User from '../models/UserModel.js';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
-import token from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'; // Import đúng cách
+import dotenv from 'dotenv';
+dotenv.config(); // Nạp các biến môi trường từ .env
+
 // Cấu hình Nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -95,43 +98,43 @@ export const verifyEmail = async (req, res) => {
 
 // Đăng nhập
 export const loginUser = async (req, res) => {
-    try {
-      const { email, password } = req.body;
-  
-      if (!email || !password) {
-        return res.status(400).json({ message: "Thiếu dữ liệu đầu vào" });
-      }
-  
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "Email không tồn tại" });
-      }
-  
-      if (!user.isVerified) {
-        return res.status(403).json({ message: "Tài khoản chưa được xác thực" });
-      }
-  
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: "Sai mật khẩu" });
-      }
-  
-      // Lưu userId vào session
-      req.session.userId = user._id;
-  
-      const token = jwt.sign(
-        { id: user._id },
-        process.env.JWT_SECRET,
-        { expiresIn: '1d' }
-      );
-  
-      res.status(200).json({
-        message: "Đăng nhập thành công",
-        token,
-        user: { name: user.name },
-      });
-    } catch (error) {
-      console.error("Lỗi khi đăng nhập người dùng:", error);
-      res.status(500).json({ message: "Lỗi server" });
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Thiếu dữ liệu đầu vào" });
     }
-  };
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Email không tồn tại" });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({ message: "Tài khoản chưa được xác thực" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Sai mật khẩu" });
+    }
+
+    // Lưu userId vào session
+    req.session.userId = user._id
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    res.status(200).json({
+      message: "Đăng nhập thành công",
+      token,
+      user: { name: user.name,id: user.id },
+    });
+  } catch (error) {
+    console.error("Lỗi khi đăng nhập người dùng:", error);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};

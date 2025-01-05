@@ -12,10 +12,11 @@ const itemSchema = new mongoose.Schema({
 
 const AccessorySchema = new mongoose.Schema({
     name: { type: String, required: true },
-    number: { type: Number, required: true },
-    price: { type: Number, required: true }, // Đảm bảo có giá cho phụ kiện
-    quantity: { type: Number, required: true }, // Đảm bảo có số lượng
-});
+    number: { type: String, required: true }, // Đổi từ Number thành String
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+  });
+  
 
 const OrderConfirmationSchema = new Schema({
     userId: {
@@ -52,20 +53,19 @@ const OrderConfirmationSchema = new Schema({
         default: 0, 
     }
 });
-
-// Nếu `receiver.similarToAbove` là true, tự động sao chép thông tin từ `placer` sang `receiver`
 OrderConfirmationSchema.pre('save', function (next) {
-    if (this.receiver.similarToAbove) {
-        this.receiver.name = this.placer.name;
-        this.receiver.phone = this.placer.phone;
-    }
-
-    // Tính tổng số tiền đơn hàng (tính cả items và phụ kiện)
-    this.totalAmount = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0) +
-                        this.Accessory.reduce((sum, accessory) => sum + accessory.price * accessory.quantity, 0);
-
+    // Tính tổng tiền của các item trong đơn hàng
+    const itemsTotal = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    
+    // Tính tổng tiền của các phụ kiện
+    const accessoriesTotal = this.Accessory.reduce((sum, accessory) => sum + accessory.price * accessory.quantity, 0);
+  
+    // Cập nhật tổng số tiền đơn hàng
+    this.totalAmount = itemsTotal + accessoriesTotal;
+  
     next();
-});
+  });
+  
 
 const OrderConfirmation = model('OrderConfirmation', OrderConfirmationSchema);
 
