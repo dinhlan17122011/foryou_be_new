@@ -51,7 +51,8 @@ const OrderConfirmationSchema = new Schema({
         type: Number, 
         required: true,
         default: 0, 
-    }
+    },
+    status: { type: String, default: 'available' },
 });
 OrderConfirmationSchema.pre('save', function (next) {
     // Tính tổng tiền của các item trong đơn hàng
@@ -61,11 +62,12 @@ OrderConfirmationSchema.pre('save', function (next) {
     const accessoriesTotal = this.Accessory.reduce((sum, accessory) => sum + accessory.price * accessory.quantity, 0);
   
     // Cập nhật tổng số tiền đơn hàng
-    this.totalAmount = itemsTotal + accessoriesTotal;
+    this.totalAmount = itemsTotal + accessoriesTotal
   
     next();
   });
   
+
 
 const OrderConfirmation = model('OrderConfirmation', OrderConfirmationSchema);
 

@@ -6,7 +6,7 @@ export const getCakes = async (req, res) => {
         const cakes = await Cake.find().populate('category'); // Populate thông tin category
         res.status(200).json(cakes);
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi server', error });
+        res.status(500).json({ message: 'Lỗi server', error })
     }
 };
 

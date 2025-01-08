@@ -6,8 +6,9 @@
   "scripts": {
     "fe": "cd .. && cd foryou-app && npm start",
     "be": " npm start",
+    "vnpay":"cd .. && cd Thanh_Toan_VNPAY && npm start",
     "test": "jest",
-    "dev": "concurrently \"npm run fe\" \"npm run be\"",
+    "dev": "concurrently \"npm run fe\" \"npm run be\" \"npm run vnpay\"",
     "start": "nodemon src/index.js"
   },
   "author": "",

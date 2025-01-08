@@ -1,3 +1,4 @@
+import { Model } from 'mongoose';
 import OrderConfirmation from '../models/orderConfirmationModels.js'; // Import model OrderConfirmation
 
 // Bước 1: Tạo đơn hàng trống
@@ -19,7 +20,9 @@ export const createOrderConfirmation = async (req, res) => {
       time: { day: '', time: '' },
       placer: { name: '', phone: '' },
       receiver: { similarToAbove: false, name: '', phone: '' },
-      address: { district: '', ward: '', details: '' }
+      address: { district: '', ward: '', details: '' },
+      totalAmount: 0, // Tổng số tiền ban đầu
+      status: 'pending', // Trạng thái đơn hàng ban đầu là 'pending'
     });
 
     // Lưu đơn hàng
@@ -62,6 +65,10 @@ export const addAccessoriesToOrder = async (req, res) => {
       return sum + (acc.price * acc.quantity);
     }, 0);
 
+    if (accessoryTotal === 0) {
+      return res.status(400).json({ message: 'Có phụ kiện không hợp lệ' });
+    }
+
     // Tìm đơn hàng theo id
     const order = await OrderConfirmation.findById(orderId);
     if (!order) {
@@ -71,8 +78,9 @@ export const addAccessoriesToOrder = async (req, res) => {
     // Cập nhật phụ kiện vào đơn hàng
     order.Accessory = Accessory;
 
-    // Cập nhật tổng số tiền đơn hàng (bao gồm cả phụ kiện và các item khác)
-    order.totalAmount = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0) + accessoryTotal + 30000; // 30000 là phí cố định hoặc bạn có thể thay đổi
+    // Tính tổng số tiền của đơn hàng (bao gồm cả phụ kiện và các item khác)
+    const shippingFee = 30000; // Phí vận chuyển cố định
+    order.totalAmount = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0) + accessoryTotal + shippingFee;
 
     // Lưu lại đơn hàng với các thay đổi
     await order.save();
@@ -84,17 +92,15 @@ export const addAccessoriesToOrder = async (req, res) => {
   }
 };
 
-
-
 // Bước 3: Cập nhật thông tin khách hàng và xác thực đơn hàng
 export const updateOrderConfirmation = async (req, res) => {
   try {
     const orderId = req.params.id;
     const { placer, receiver, address, time, bill } = req.body;
 
-    // Kiểm tra nếu thiếu thông tin cần thiết
+    // Kiểm tra nếu thiếu thông tin
     if (!placer || !receiver || !address) {
-      return res.status(400).json({ message: 'Thông tin đặt hàng không hợp lệ' });
+      return res.status(400).json({ message: 'Thông tin đơn hàng không hợp lệ' });
     }
 
     const order = await OrderConfirmation.findById(orderId);
@@ -102,20 +108,19 @@ export const updateOrderConfirmation = async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
     }
 
-    // Cập nhật thông tin khách hàng
+    // Cập nhật thông tin đơn hàng
     order.placer = placer;
     order.receiver = receiver;
     order.address = address;
     order.time = time;
-    order.bill = bill; // Cập nhật thông tin thanh toán
+    order.bill = bill;
 
-    // Nếu người nhận giống với người đặt, sao chép thông tin từ placer sang receiver
+    // Nếu người nhận giống người đặt, sao chép thông tin
     if (receiver.similarToAbove) {
       order.receiver.name = order.placer.name;
       order.receiver.phone = order.placer.phone;
     }
 
-    // Lưu thông tin cập nhật
     await order.save();
 
     res.status(200).json({
@@ -128,34 +133,7 @@ export const updateOrderConfirmation = async (req, res) => {
   }
 };
 
-// Bước 4: Xác nhận và hoàn tất đơn hàng
-export const finalizeOrderConfirmation = async (req, res) => {
-  try {
-    const orderId = req.params.id;
-    const { bill } = req.body;
-
-    const order = await OrderConfirmation.findById(orderId);
-    if (!order) {
-      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
-    }
-
-    // Cập nhật lại thông tin thanh toán
-    order.bill = bill;
-    order.tickBill = true; // Đánh dấu đã thanh toán
-
-    // Lưu đơn hàng sau khi thanh toán
-    await order.save();
-
-    res.status(200).json({
-      message: 'Đơn hàng đã được xác nhận và thanh toán',
-      order
-    });
-  } catch (error) {
-    console.error('Lỗi khi xác nhận đơn hàng:', error);
-    res.status(500).json({ message: 'Xác nhận đơn hàng thất bại', error });
-  }
-};
-
+// Lấy danh sách đơn hàng theo userId
 export const getOrdersByUserId = async (req, res) => {
   try {
     const { userId } = req.params; // Lấy userId từ params
@@ -186,6 +164,33 @@ export const getOrdersByUserId = async (req, res) => {
   }
 };
 
+// Bước 4: Cập nhật trạng thái đơn hàng khi thanh toán
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { status } = req.body;
+
+    if (status !== 'paid' && status !== 'cancelled') {
+      return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+    }
+
+    const order = await OrderConfirmation.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.status(200).json({
+      message: 'Cập nhật trạng thái đơn hàng thành công',
+      order
+    });
+  } catch (error) {
+    console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
+    res.status(500).json({ message: 'Cập nhật trạng thái đơn hàng thất bại', error });
+  }
+};
 
 // Bước 5: Xóa đơn hàng
 export const deleteOrderConfirmation = async (req, res) => {
@@ -207,5 +212,61 @@ export const deleteOrderConfirmation = async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi xóa đơn hàng:', error);
     res.status(500).json({ message: 'Xóa đơn hàng thất bại', error });
+  }
+};
+
+// API cập nhật trạng thái sản phẩm
+// API cập nhật trạng thái sản phẩm
+export const updateProductStatus = async (req, res) => {
+  const { orderId, status } = req.body;
+
+  // Kiểm tra dữ liệu đầu vào
+  if (!orderId || !status) {
+    return res.status(400).json({ message: 'Thiếu orderId hoặc trạng thái (status)' });
+  }
+
+  // Chỉ cho phép các trạng thái hợp lệ
+  const validStatuses = ['available', 'sold', 'pending', 'cancelled'];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+  }
+
+  try {
+    // Tìm đơn hàng theo orderId
+    const order = await OrderConfirmation.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+    }
+
+    // Cập nhật trạng thái cho đơn hàng
+    order.status = status;
+    await order.save();
+
+    // Nếu trạng thái là "sold", cập nhật trạng thái sản phẩm liên quan
+    if (status === 'sold' && order.items && order.items.length > 0) {
+      const updateProductsStatus = async (items, productStatus) => {
+        const promises = items.map((itemId) =>
+          OrderConfirmation.findByIdAndUpdate(itemId, { status: productStatus }, { new: true })
+        );
+        await Promise.all(promises); // Thực thi tất cả cập nhật song song
+      };
+
+      await updateProductsStatus(order.items, 'sold');
+    }
+
+    // Trả về kết quả thành công
+    res.status(200).json({
+      message: `Cập nhật trạng thái thành công: ${status}`,
+      order,
+    });
+  } catch (error) {
+    console.error('Lỗi khi cập nhật trạng thái:', error);
+
+    res.status(500).json({
+      message: 'Cập nhật trạng thái thất bại',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    });
   }
 };

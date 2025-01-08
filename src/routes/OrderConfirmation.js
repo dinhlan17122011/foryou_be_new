@@ -4,10 +4,12 @@ import {
   createOrderConfirmation,
   addAccessoriesToOrder,
   updateOrderConfirmation,
-  finalizeOrderConfirmation,
   getOrdersByUserId,
-  deleteOrderConfirmation
+  deleteOrderConfirmation,
+  updateProductStatus
 } from '../controllers/OrderConfirmation.js';
+
+import OrderConfirmation from '../models/orderConfirmationModels.js';
 
 const router = express.Router();
 
@@ -28,7 +30,6 @@ router.post('/:id/accessory', addAccessoriesToOrder);
 // Cập nhật thông tin người đặt và người nhận
 router.put('/:id/update', updateOrderConfirmation);
 
-// Xác nhận và thanh toán đơn hàng
-router.put('/:id/finalize', finalizeOrderConfirmation);
+router.put('/update-status', updateProductStatus);
 
 export default router;
