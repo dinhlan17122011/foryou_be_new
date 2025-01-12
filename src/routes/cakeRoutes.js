@@ -1,6 +1,5 @@
 import express from 'express';
 import { getCakes, getCakeById, createCake, updateCake, deleteCake } from '../controllers/cakeController.js';
-
 const router = express.Router();
 
 router.get('/', getCakes); // Lấy tất cả bánh

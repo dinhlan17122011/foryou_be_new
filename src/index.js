@@ -5,7 +5,7 @@ const port = 3000
 import bodyParser from 'body-parser';
 
 import connectDB from './config/connectDB.js';
-
+import path from 'path';
 import userRoutes from './routes/userRoutes.js';
 import cakeRoutes from './routes/cakeRoutes.js';
 import accessoryRoutes from './routes/accessoryRoutes.js';
@@ -13,6 +13,7 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/OrderConfirmation.js';
 // const cors = require("cors");
 import cors from 'cors';
+import { fileURLToPath } from 'url';
 
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
@@ -30,6 +31,10 @@ app.use(session({
     maxAge: 3600000, // 1 giờ
   },
 }));
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Thêm vào trong file server.js (hoặc file tương tự)
 app.use(cors({
